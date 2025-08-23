@@ -22,3 +22,14 @@ node_modules/
 Secrets/
 *.json
 EOF
+
+# Shell/editor configs
+.ipython/
+.nano/
+.bash_history
+
+# Stray backups
+* Backup
+*.bak
+*.orig
+*.rej
