@@ -8,4 +8,3 @@ if [ -n "$FIREBASE_CREDENTIALS_JSON" ]; then
   export GOOGLE_APPLICATION_CREDENTIALS=/secrets/service-account.json
 fi
 exec "$@"
-EOF

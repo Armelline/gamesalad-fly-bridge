@@ -10,4 +10,3 @@ ENV PORT=8000 HOST=0.0.0.0
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["uvicorn","main:app","--host","0.0.0.0","--port","8000"]
-EOF
