@@ -1,0 +1,67 @@
+from fastapi import FastAPI, Request, Form
+from fastapi.middleware.cors import CORSMiddleware
+import hashlib
+import json
+from os import environ
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db
+
+
+cred = credentials.Certificate(environ['GOOGLE_APPLICATION_CREDENTIALS'])
+
+firebase_admin.initialize_app(cred,{
+    'databaseURL': environ['DB_URL']
+})
+
+db_ref = db.reference("tables")
+
+app = FastAPI()
+
+origins = [
+    "http://armelline.com",
+    "https://armelline.com",
+    "http://www.armelline.com",
+    "https://www.armelline.com"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Called when you use "Network Send Table To URL"
+@app.post("/")
+async def receive_table(request: Request, userId: str, params: str = Form(...)):
+#async def receive_table(request: Request, userId: str, sig: str = Form(...), params: str = Form(...)):
+
+  # SHA1 hash check of param data
+  '''
+  content_sig = hashlib.sha1(params.encode('utf-8')).hexdigest()
+  if content_sig != sig:
+    # Failed security check
+    return { "Status": "Failure" }
+  '''
+  
+  print(params)
+  
+  db_ref.child(userId).set(json.loads(params))
+   
+  # Return success
+  return {
+    "Status": "Success"
+  }
+
+
+# Called when you use "Network Get Table From URL"
+@app.get("/")
+async def send_table(userId: str):
+  
+  table = db_ref.child(userId).get()
+  
+  print(table)
+  
+  return table

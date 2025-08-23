@@ -1,0 +1,24 @@
+cat > .gitignore << 'EOF'
+# Python
+__pycache__/
+*.pyc
+.venv/
+.mypy_cache/
+.pytest_cache/
+
+# macOS / editors
+.DS_Store
+*.swp
+
+# Glitch / local clutter
+.glitch-assets/
+.cache/
+.local/
+node_modules/
+
+# Secrets (keep these OUT of git)
+.env
+.data/
+Secrets/
+*.json
+EOF
