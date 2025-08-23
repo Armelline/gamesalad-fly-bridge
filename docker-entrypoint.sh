@@ -1,4 +1,3 @@
-cat > docker-entrypoint.sh << 'EOF'
 #!/bin/sh
 set -e
 # If Firebase JSON is provided as a secret, write it to a file
