@@ -33,3 +33,13 @@ EOF
 *.bak
 *.orig
 *.rej
+
+# Shell/editor configs
+.ipython/
+.nano/
+.bash_history
+# Stray backups
+* Backup
+*.bak
+*.orig
+*.rej
