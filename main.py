@@ -8,6 +8,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 import random
 import string
+import os, base64
 
 
 def generate_id(length):
@@ -15,8 +16,30 @@ def generate_id(length):
     result_str = ''.join((random.choice(letters_and_digits) for i in range(length)))
     return "id" + result_str
 
+def _load_firebase_cred():
+    b64 = os.environ.get('FIREBASE_CREDENTIALS_JSON_B64')
+    if b64:
+        try:
+            data = json.loads(base64.b64decode(b64).decode('utf-8'))
+            return credentials.Certificate(data)
+        except Exception as e:
+            print("Failed to load creds from FIREBASE_CREDENTIALS_JSON_B64:", e)
 
-cred = credentials.Certificate(environ['GOOGLE_APPLICATION_CREDENTIALS'])
+    raw = os.environ.get('FIREBASE_CREDENTIALS_JSON')
+    if raw:
+        try:
+            data = json.loads(raw)
+            return credentials.Certificate(data)
+        except Exception as e:
+            print("Failed to load creds from FIREBASE_CREDENTIALS_JSON:", e)
+
+    path = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+    if path and os.path.exists(path):
+        return credentials.Certificate(path)
+
+    raise RuntimeError("No Firebase credentials found. Set FIREBASE_CREDENTIALS_JSON_B64 or GOOGLE_APPLICATION_CREDENTIALS.")
+
+cred = _load_firebase_cred()
 
 firebase_admin.initialize_app(cred,{
     'databaseURL': environ['DB_URL']
